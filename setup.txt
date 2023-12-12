@@ -1,0 +1,7 @@
+docker build -t producer-image -f Dockerfile_producer .
+docker build -t consumer-image -f Dockerfile_consumer .
+
+docker network create tpiuo
+
+docker run --network=tpiuo -p 8080:8080 --name producer-container producer-image
+docker run --network=tpiuo -p 8081:8081 --name consumer-container consumer-image
