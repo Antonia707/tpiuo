@@ -3,7 +3,7 @@ name: lab2 CI/CD
 on:
   push:
     branches:
-      - lab2
+      - main
 
 jobs:
   editorconfig_consumer:
