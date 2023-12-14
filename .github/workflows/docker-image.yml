@@ -49,11 +49,11 @@ jobs:
       - name: Build and deploy Container App
         uses: azure/container-apps-deploy-action@v1
         with:
-          appSourcePath: ${{ github.workspace }}
+          appSourcePath: ${{ github.workspace }}/consumer
           acrName: crtpiuolab1
           containerAppName: ca-consumer
           resourceGroup: fervjestina
-          dockerfilePath: consumer/Dockerfile-consumer
+          dockerfilePath: Dockerfile-consumer
 
           
 
