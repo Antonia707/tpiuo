@@ -39,26 +39,17 @@ jobs:
     needs:
       - linter_consumer
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Azure Login
+      - name: Log in to Azure
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Build Docker Image
-        run: docker build . --file consumer/Dockerfile-consumer --tag consumer:$(date +%s)
-
-      - name: Push Docker Image to ACR
-        run: docker push crtpiuolab1.azurecr.io/consumer:latest
-
-      - name: Deploy to Azure Container Apps
-        uses: Azure/azure-container-apps-build-and-deploy@v1
+      - name: Build and deploy Container App
+        uses: azure/container-apps-deploy-action@v1
         with:
-          resource-group: 'fervjestina'
-          container-app-name: 'ca-consumer'
-          docker-file-path: 'consumer/Dockerfile-consumer'
+          appSourcePath: ${{ github.workspace }}
+          acrName: ca-consumer
+          dockerfilePath: consumer/Dockerfile-consumer
 
           
 
@@ -95,25 +86,16 @@ jobs:
     needs:
       - linter_producer
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Azure Login
+      - name: Log in to Azure
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Build Docker Image
-        run: docker build . --file producer/Dockerfile-producer --tag producer:$(date +%s)
-
-      - name: Push Docker Image to ACR
-        run: docker push crtpiuolab1.azurecr.io/producer:latest
-
-      - name: Deploy to Azure Container Apps
-        uses: Azure/azure-container-apps-build-and-deploy@v1
+      - name: Build and deploy Container App
+        uses: azure/container-apps-deploy-action@v1
         with:
-          resource-group: 'fervjestina'
-          container-app-name: 'ca-producer'
-          docker-file-path: 'producer/Dockerfile-producer'
+          appSourcePath: ${{ github.workspace }}
+          acrName: ca-producer
+          dockerfilePath: producer/Dockerfile-producer
 
 
