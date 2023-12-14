@@ -38,7 +38,6 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - linter_consumer
-    if: "needs.linter_consumer.outcome == 'success'"
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -95,7 +94,6 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - linter_producer
-    if: "needs.linter_producer.outcome == 'success'"
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
