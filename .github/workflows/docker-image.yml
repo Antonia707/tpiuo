@@ -1,0 +1,109 @@
+name: lab2 CI/CD
+
+on:
+  push:
+    branches:
+      - lab2
+
+jobs:
+  editorconfig_consumer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: EditorConfig Check - Consumer
+        uses: stefanzweifel/editorconfig-checker@v3
+
+  linter_consumer:
+    runs-on: ubuntu-latest
+    needs: editorconfig_consumer
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Linter Check - Consumer
+        uses: wagoid/python-code-quality@v1
+        with:
+          python-version: '3.8'
+          code-quality-tool: 'flake8'
+
+  build_and_deploy_consumer:
+    runs-on: ubuntu-latest
+    needs:
+      - linter_consumer
+    if: "needs.linter_consumer.outcome == 'success'"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Build Docker Image
+        run: docker build . --file consumer/Dockerfile-consumer --tag consumer:$(date +%s)
+
+      - name: Push Docker Image to ACR
+        run: docker push crtpiuolab1.azurecr.io/consumer:latest
+
+      - name: Deploy to Azure Container Apps
+        uses: Azure/azure-container-apps-build-and-deploy@v1
+        with:
+          resource-group: 'fervjestina'
+          container-app-name: 'ca-consumer'
+          docker-file-path: 'consumer/Dockerfile-consumer'
+
+          
+
+  editorconfig_producer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: EditorConfig Check - Producer
+        uses: stefanzweifel/editorconfig-checker@v3
+
+  linter_producer:
+    runs-on: ubuntu-latest
+    needs: editorconfig_producer
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Linter Check - Producer
+        uses: wagoid/python-code-quality@v1
+        with:
+          python-version: '3.8'
+          code-quality-tool: 'flake8'
+
+  build_and_deploy_producer:
+    runs-on: ubuntu-latest
+    needs:
+      - linter_producer
+    if: "needs.linter_producer.outcome == 'success'"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Build Docker Image
+        run: docker build . --file producer/Dockerfile-producer --tag producer:$(date +%s)
+
+      - name: Push Docker Image to ACR
+        run: docker push crtpiuolab1.azurecr.io/producer:latest
+
+      - name: Deploy to Azure Container Apps
+        uses: Azure/azure-container-apps-build-and-deploy@v1
+        with:
+          resource-group: 'fervjestina'
+          container-app-name: 'ca-producer'
+          docker-file-path: 'producer/Dockerfile-producer'
+
+
