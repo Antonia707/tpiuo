@@ -1,0 +1,17 @@
+FROM python:3.8-slim
+
+# Postavljanje radnog direktorija na /app
+WORKDIR /app
+
+# Kopiranje trenutnog sadržaja direktorija u kontejner u /app
+COPY . /app
+
+# Kopiranje requirements.txt i instalacija ovisnosti
+COPY ./requirements.txt /app/
+RUN pip install -r requirements.txt
+
+# Izloži port 8080
+EXPOSE 8080
+
+# Pokreni producenta
+CMD ["python", "producer.py"]
