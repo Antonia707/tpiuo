@@ -25,7 +25,7 @@ async def run(data):
         event_data_batch = await producer.create_batch()
 
         # Add events to the batch.
-        #event_data_batch.add(EventData("Post: \n"))
+        event_data_batch.add(EventData("Post: \n"))
         event_data_batch.add(EventData(data))
 
         # Send the batch of events to the event hub.
