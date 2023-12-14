@@ -48,7 +48,7 @@ jobs:
         uses: azure/container-apps-deploy-action@v1
         with:
           appSourcePath: ${{ github.workspace }}
-          acrName: ca-consumer
+          acrName: crtpiuolab1
           dockerfilePath: consumer/Dockerfile-consumer
 
           
@@ -95,7 +95,7 @@ jobs:
         uses: azure/container-apps-deploy-action@v1
         with:
           appSourcePath: ${{ github.workspace }}
-          acrName: ca-producer
+          acrName: crtpiuolab1
           dockerfilePath: producer/Dockerfile-producer
 
 
