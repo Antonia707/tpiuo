@@ -102,7 +102,7 @@ jobs:
         with:
           appSourcePath: ${{ github.workspace }}/producer
           acrName: crtpiuolab1
-          containerAppName: ca-consumer
+          containerAppName: ca-producer
           resourceGroup: fervjestina
           dockerfilePath: Dockerfile-producer
 
