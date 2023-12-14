@@ -9,11 +9,9 @@ jobs:
   editorconfig_consumer:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: EditorConfig Check - Consumer
-        uses: stefanzweifel/editorconfig-checker@v3
+      - uses: actions/checkout@v2
+      - uses: editorconfig-checker/action-editorconfig-checker@main
+      - run: editorconfig-checker
 
   linter_consumer:
     runs-on: ubuntu-latest
@@ -60,11 +58,9 @@ jobs:
   editorconfig_producer:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: EditorConfig Check - Producer
-        uses: stefanzweifel/editorconfig-checker@v3
+      - uses: actions/checkout@v2
+      - uses: editorconfig-checker/action-editorconfig-checker@main
+      - run: editorconfig-checker
 
   linter_producer:
     runs-on: ubuntu-latest
