@@ -17,41 +17,39 @@ jobs:
     runs-on: ubuntu-latest
     needs: editorconfig_consumer
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Check out Git repository
+        uses: actions/checkout@v3
 
-      - name: Linter Check - Consumer
-        uses: wagoid/python-code-quality@v1
+      - name: Set up Python
+        uses: actions/setup-python@v1
         with:
-          python-version: '3.8'
-          code-quality-tool: 'flake8'
+          python-version: 3.8
+
+      - name: Install Python dependencies
+        run: pip install black flake8
+
+      - name: Run linters
+        uses: wearerequired/lint-action@v2
+        with:
+          black: true
+          flake8: true
 
   build_and_deploy_consumer:
     runs-on: ubuntu-latest
     needs:
       - linter_consumer
-    if: "needs.linter_consumer.outcome == 'success'"
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Azure Login
+      - name: Log in to Azure
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Build Docker Image
-        run: docker build . --file consumer/Dockerfile-consumer --tag consumer:$(date +%s)
-
-      - name: Push Docker Image to ACR
-        run: docker push crtpiuolab1.azurecr.io/consumer:latest
-
-      - name: Deploy to Azure Container Apps
-        uses: Azure/azure-container-apps-build-and-deploy@v1
+      - name: Build and deploy Container App
+        uses: azure/container-apps-deploy-action@v1
         with:
-          resource-group: 'fervjestina'
-          container-app-name: 'ca-consumer'
-          docker-file-path: 'consumer/Dockerfile-consumer'
+          appSourcePath: ${{ github.workspace }}
+          acrName: crtpiuolab1
+          dockerfilePath: consumer/Dockerfile-consumer
 
           
 
@@ -66,40 +64,38 @@ jobs:
     runs-on: ubuntu-latest
     needs: editorconfig_producer
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Check out Git repository
+        uses: actions/checkout@v3
 
-      - name: Linter Check - Producer
-        uses: wagoid/python-code-quality@v1
+      - name: Set up Python
+        uses: actions/setup-python@v1
         with:
-          python-version: '3.8'
-          code-quality-tool: 'flake8'
+          python-version: 3.8
+
+      - name: Install Python dependencies
+        run: pip install black flake8
+
+      - name: Run linters
+        uses: wearerequired/lint-action@v2
+        with:
+          black: true
+          flake8: true
 
   build_and_deploy_producer:
     runs-on: ubuntu-latest
     needs:
       - linter_producer
-    if: "needs.linter_producer.outcome == 'success'"
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Azure Login
+      - name: Log in to Azure
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Build Docker Image
-        run: docker build . --file producer/Dockerfile-producer --tag producer:$(date +%s)
-
-      - name: Push Docker Image to ACR
-        run: docker push crtpiuolab1.azurecr.io/producer:latest
-
-      - name: Deploy to Azure Container Apps
-        uses: Azure/azure-container-apps-build-and-deploy@v1
+      - name: Build and deploy Container App
+        uses: azure/container-apps-deploy-action@v1
         with:
-          resource-group: 'fervjestina'
-          container-app-name: 'ca-producer'
-          docker-file-path: 'producer/Dockerfile-producer'
+          appSourcePath: ${{ github.workspace }}
+          acrName: crtpiuolab1
+          dockerfilePath: producer/Dockerfile-producer
 
 
