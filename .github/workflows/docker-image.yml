@@ -37,6 +37,8 @@ jobs:
 
   build_and_deploy_consumer:
     runs-on: ubuntu-latest
+    needs:
+      - linter_consumer
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v3
@@ -98,8 +100,10 @@ jobs:
       - name: Build and deploy Container App
         uses: azure/container-apps-deploy-action@v1
         with:
-          appSourcePath: ${{ github.workspace }}
+          appSourcePath: ${{ github.workspace }}/producer
           acrName: crtpiuolab1
-          dockerfilePath: producer/Dockerfile-producer
+          containerAppName: ca-consumer
+          resourceGroup: fervjestina
+          dockerfilePath: Dockerfile-producer
 
 
