@@ -49,6 +49,7 @@ jobs:
         with:
           appSourcePath: ${{ github.workspace }}
           acrName: crtpiuolab1
+          resourceGroup: fervjestina
           dockerfilePath: consumer/Dockerfile-consumer
 
           
