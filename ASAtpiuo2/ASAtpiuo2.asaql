@@ -1,0 +1,29 @@
+
+-- Before you begin
+-- 1. Add input: right-click the Inputs folder and select "ASA: Add Input" to prepare your input data.
+-- 2. Add output: right-click the Outputs folder and select "ASA: Add Output" to choose your sink type.
+-- 3. Edit your query below and start testing your ASA job locally.
+-- For more information, please visit: https://docs.microsoft.com/en-us/azure/stream-analytics/quick-create-visual-studio-code
+
+
+-- Define the input from Event Hub
+SELECT
+    -- Use the correct path to extract data from the nested JSON structure
+    GetRecordPropertyValue([EventHub1], 'data.author') AS author,
+    GetRecordPropertyValue([EventHub1], 'data.title') AS title,
+    GetRecordPropertyValue([EventHub1], 'data.selftext') AS content,
+    GetRecordPropertyValue([EventHub1], 'data.ups') AS ups,
+    GetRecordPropertyValue([EventHub1], 'data.downs') AS downs,
+    GetRecordPropertyValue([EventHub1], 'data.upvote_ratio') AS upvote_ratio,
+    GetRecordPropertyValue([EventHub1], 'data.score') AS score,
+    GetRecordPropertyValue([EventHub1], 'data.created_utc') AS created,
+    GetRecordPropertyValue([EventHub1], 'data.num_comments') AS num_comments,
+    GetRecordPropertyValue([EventHub1], 'data.is_video') AS is_video
+
+INTO
+    CosmosDB1
+FROM
+    EventHub1
+WHERE
+    GetRecordPropertyValue([EventHub1], 'data.num_comments') > 0
+
